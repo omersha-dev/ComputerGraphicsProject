@@ -1,0 +1,10 @@
+D:\HIT\Computer Graphics\P9\texturedOGL CUBE\myOpenGL\bin\Debug\myOpenGL.exe.config
+D:\HIT\Computer Graphics\P9\texturedOGL CUBE\myOpenGL\bin\Debug\myOpenGL.exe
+D:\HIT\Computer Graphics\P9\texturedOGL CUBE\myOpenGL\bin\Debug\myOpenGL.pdb
+D:\HIT\Computer Graphics\P9\texturedOGL CUBE\myOpenGL\obj\Debug\myOpenGL.csprojAssemblyReference.cache
+D:\HIT\Computer Graphics\P9\texturedOGL CUBE\myOpenGL\obj\Debug\myOpenGL.Form1.resources
+D:\HIT\Computer Graphics\P9\texturedOGL CUBE\myOpenGL\obj\Debug\myOpenGL.Properties.Resources.resources
+D:\HIT\Computer Graphics\P9\texturedOGL CUBE\myOpenGL\obj\Debug\myOpenGL.csproj.GenerateResource.cache
+D:\HIT\Computer Graphics\P9\texturedOGL CUBE\myOpenGL\obj\Debug\myOpenGL.csproj.CoreCompileInputs.cache
+D:\HIT\Computer Graphics\P9\texturedOGL CUBE\myOpenGL\obj\Debug\myOpenGL.exe
+D:\HIT\Computer Graphics\P9\texturedOGL CUBE\myOpenGL\obj\Debug\myOpenGL.pdb
