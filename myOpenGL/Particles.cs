@@ -58,10 +58,5 @@ namespace myOpenGL
 			this.rotation += this.rotaionDirection;
 		}
 
-		public void updateAlpha()
-		{
-			this.colors[3] -= 1;
-		}
-
 	}
 }

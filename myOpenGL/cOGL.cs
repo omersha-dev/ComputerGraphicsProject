@@ -278,12 +278,13 @@ namespace OpenGL
                 particles[currentParticle].setRotation(randomFloat(0, 90));
 				if (particles[currentParticle].lifeTime == 20)
 				{
+                    particles[currentParticle].colors[3] = 1;
                     particles[currentParticle].setPosition(0, rocketYpos - 0.7f, -2.0f);
                     particles[currentParticle].setRotationDirection(randomFloat(-1, 1));
 				}
                 //particles[currentParticle].setPosition(0, rocketYpos - 0.7f, -2.0f);
                 GL.glTranslatef(particles[currentParticle].position[0], particles[currentParticle].position[1] - rocketYpos, 0);
-                GL.glColor3f(1.0f, 0, 0);
+                GL.glColor4f(particles[currentParticle].colors[0], particles[currentParticle].colors[1], particles[currentParticle].colors[2], particles[currentParticle].colors[3]);
                 GL.glRotated(particles[currentParticle].rotation, 0, 0, 1);
                 GL.glBegin(GL.GL_QUADS);
                 GL.glVertex3d(0.25f, 0.0f, 0.0f);
@@ -303,20 +304,24 @@ namespace OpenGL
                     particles[i].updateRotation();
                     GL.glTranslatef(particles[i].position[0], particles[i].position[1] - rocketYpos, 0);
                     GL.glRotated(particles[i].rotation, 0, 0, 1);
-                    //particles[i].updateAlpha();
-                    //GL.glColor4f(particles[i].colors[0], particles[i].colors[1], particles[i].colors[2], particles[i].colors[3]);
-                    GL.glBegin(GL.GL_QUADS);
+                    GL.glEnable(GL.GL_BLEND);
+                    float particleAlpha = (float)(0.75 - Math.Log10(Math.Abs(rocketYpos - particles[i].position[1])));
+                    Console.WriteLine(particleAlpha);
+                    GL.glColor4f(particles[i].colors[0], particles[i].colors[1], particles[i].colors[2], particleAlpha);
+					GL.glBegin(GL.GL_QUADS);
                     GL.glVertex3d(0.25f, 0.0f, 0.0f);
                     GL.glVertex3d(0.25f, 0.25f, 0.0f);
                     GL.glVertex3d(0.0f, 0.25f, 0.0f);
                     GL.glVertex3d(0.0f, 0.0f, 0.0f);
                     GL.glEnd();
+                    GL.glDisable(GL.GL_BLEND);
                     GL.glRotated(-particles[i].rotation, 0, 0, 1);
                     GL.glTranslatef(-particles[i].position[0], -(particles[i].position[1] - rocketYpos), 0);
 					particles[i].lifeTime--;
                     if (particles[i].lifeTime <= 0)
 					{
                         particles[i].lifeTime = 20;
+                        particles[currentParticle].colors[3] = 1;
                         particles[i].setPosition(0, rocketYpos - 0.7f, -2.0f);
                         particles[currentParticle].setRotationDirection(randomFloat(-1, 1));
                     }
