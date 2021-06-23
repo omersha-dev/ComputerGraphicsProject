@@ -17,10 +17,12 @@ namespace OpenGL
         public int intOptionA=1;
 
         GLUquadric obj;
-        float rocketYpos = 4.25f;
+        float rocketYpos = -5f;
         public float randFloat;
 
-        public Particles particle = new Particles();
+        public int maxParticles = 25;
+        public int currentParticle = 0;
+        public Particles[] particles;
 
         public cOGL(Control pb)
         {
@@ -39,6 +41,13 @@ namespace OpenGL
             intOptionA = 1;
 
             randFloat = randomFloat(-3, 3);
+
+            Particles[] particles = new Particles[maxParticles];
+            for (int i = 0; i < maxParticles; i++)
+			{
+                particles[i] = new Particles();
+			}
+            this.particles = particles;
 
             InitializeGL();
             obj = GLU.gluNewQuadric();
@@ -70,10 +79,6 @@ namespace OpenGL
 		{
 			get{ return m_uint_RC; }
 		}
-        
-        float angle = 0.0f;
-
-
 
         public int viewAngle;
 		public bool isAnimate;
@@ -82,10 +87,6 @@ namespace OpenGL
         public float Xangl;
         public float Yangl;
         public float Zangl;
-
-        float d;
-        float fZ = -6.0f;		// amount to move into the screen
-        int iDirection = 0;  // current direction (0 - down the -z axis, 1 - twords the viewer)  
 
         uint ROCKET;
         uint ROCKET_BODY;
@@ -258,12 +259,10 @@ namespace OpenGL
             
             float rocketSpeed = 0.1f;
 
-            if (rocketYpos >= 4)
+            if (rocketYpos >= 6.5)
             {
                 randFloat = randomFloat(-3, 3);
                 rocketYpos = -rocketYpos;
-                particle.setRotation(randomFloat(0, 90));
-                particle.setPosition(randFloat-0.25f, rocketYpos, -2.0f);
             }
             else
             {
@@ -274,20 +273,61 @@ namespace OpenGL
             GL.glCallList(ROCKET);
 
             /* Start particle system */
-            if (particle.lifeTime > 0)
-			{
-                GL.glTranslatef(particle.position[0] - randFloat, particle.position[1] - rocketYpos, 0);
+            if (particles[currentParticle].lifeTime > 0)
+            {
+                particles[currentParticle].setRotation(randomFloat(0, 90));
+				if (particles[currentParticle].lifeTime == 20)
+				{
+                    particles[currentParticle].setPosition(0, rocketYpos - 0.7f, -2.0f);
+                    particles[currentParticle].setRotationDirection(randomFloat(-1, 1));
+				}
+                //particles[currentParticle].setPosition(0, rocketYpos - 0.7f, -2.0f);
+                GL.glTranslatef(particles[currentParticle].position[0], particles[currentParticle].position[1] - rocketYpos, 0);
                 GL.glColor3f(1.0f, 0, 0);
-                GL.glRotated(particle.rotation, 0, 0, 1);
+                GL.glRotated(particles[currentParticle].rotation, 0, 0, 1);
                 GL.glBegin(GL.GL_QUADS);
                 GL.glVertex3d(0.25f, 0.0f, 0.0f);
                 GL.glVertex3d(0.25f, 0.25f, 0.0f);
                 GL.glVertex3d(0.0f, 0.25f, 0.0f);
                 GL.glVertex3d(0.0f, 0.0f, 0.0f);
                 GL.glEnd();
-                GL.glRotated(particle.rotation, 0, 0, -1);
-                GL.glTranslatef(-(particle.position[0] - randFloat), -(particle.position[1] - rocketYpos), 0);
-                //particle.lifetime--;
+                GL.glRotated(particles[currentParticle].rotation, 0, 0, -1);
+                GL.glTranslatef(-particles[currentParticle].position[0], -(particles[currentParticle].position[1] - rocketYpos), 0);
+
+				for (int i = 0; i < maxParticles; i++)
+                {
+                    if (i == currentParticle)
+                        continue;
+                    if (particles[i].shouldRender == 0)
+                        break;
+                    particles[i].updateRotation();
+                    GL.glTranslatef(particles[i].position[0], particles[i].position[1] - rocketYpos, 0);
+                    GL.glRotated(particles[i].rotation, 0, 0, 1);
+                    //particles[i].updateAlpha();
+                    //GL.glColor4f(particles[i].colors[0], particles[i].colors[1], particles[i].colors[2], particles[i].colors[3]);
+                    GL.glBegin(GL.GL_QUADS);
+                    GL.glVertex3d(0.25f, 0.0f, 0.0f);
+                    GL.glVertex3d(0.25f, 0.25f, 0.0f);
+                    GL.glVertex3d(0.0f, 0.25f, 0.0f);
+                    GL.glVertex3d(0.0f, 0.0f, 0.0f);
+                    GL.glEnd();
+                    GL.glRotated(-particles[i].rotation, 0, 0, 1);
+                    GL.glTranslatef(-particles[i].position[0], -(particles[i].position[1] - rocketYpos), 0);
+					particles[i].lifeTime--;
+                    if (particles[i].lifeTime <= 0)
+					{
+                        particles[i].lifeTime = 20;
+                        particles[i].setPosition(0, rocketYpos - 0.7f, -2.0f);
+                        particles[currentParticle].setRotationDirection(randomFloat(-1, 1));
+                    }
+                }
+
+			}
+            particles[currentParticle].shouldRender = 1;
+            currentParticle++;
+            if (currentParticle == maxParticles)
+			{
+                currentParticle = 0;
 			}
             /* End particle system */
 
